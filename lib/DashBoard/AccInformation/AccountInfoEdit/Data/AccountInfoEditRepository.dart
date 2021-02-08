@@ -37,6 +37,7 @@ class AccountInfoEditRepositoryImp extends AccountInfoEditRepository {
       String zip,
       String email,
       String country}) async{
+
     Map body={
       "user_id":user_id,
       "first_name":first_name,
@@ -47,19 +48,54 @@ class AccountInfoEditRepositoryImp extends AccountInfoEditRepository {
       "address":address,
       "city":city,
       "zip":zip,
+      "email":email,
       "country":country
     };
 
     try{
-      print(Configuration.BASE_URL+"api/customers/edit");
-      final response=await http.post(Configuration.BASE_URL+"api/customers/edit",body: body);
+      print(Configuration.BASE_URLSean+"api/customers/edit");
+      final response=await http.post(Configuration.BASE_URL+"api/customers/update",
+        body: body,);
       print(response.statusCode);
       if(response.statusCode==200){
-        var responsedecode=json.decode(response.body);
-        return responsedecode.toString();
+        String responses=response.body.toString();
+        var responsedecode=json.decode(responses);
+        var isSuccess=responsedecode["success"];
+        if(isSuccess==true){
+          return "true";
+        }else{
+          return "upload failed";
+        }
+
       }
-      return response;
+      /*var request =  http.MultipartRequest(
+          'POST', Uri.parse(Configuration.BASE_URL+"api/customers/update"));
+
+      request.fields["user_id"] = "user_id";
+      request.fields["first_name"] ="first_name";
+      request.fields["last_name"] = "last_name";
+      request.fields["phone"] = "phone";
+      request.fields["gender"] = "gender";
+      request.fields["address"] = "address";
+      request.fields["city"] = "city";
+      request.fields["zip"] = "zip";
+      request.fields["country"] = "country";
+      request.files.add(await http.MultipartFile.fromPath(
+          'picture',
+          picture.path
+      )
+      );
+      var response = await request.send();
+      if(response.statusCode==200){
+        print(response.stream);
+        print(response.statusCode);
+        final res = await http.Response.fromStream(response);
+        print(res.body);
+        return response;
+      }*/
+     return "upload failed";
     }catch(e){
+      debugPrint(e.toString());
       throw Exception();
     }
   }

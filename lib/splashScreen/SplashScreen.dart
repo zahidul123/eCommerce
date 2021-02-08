@@ -74,7 +74,7 @@ class StartState extends State<SplashScreen> {
               backgroundColor: Colors.white,
               strokeWidth: 1,
             )*/
-            Padding(
+            Visibility(child:Padding(
               padding: EdgeInsets.all(15),
               child:
               Container(
@@ -96,7 +96,7 @@ class StartState extends State<SplashScreen> {
                   ),
                 ),
               )
-             /* LinearPercentIndicator(
+              /* LinearPercentIndicator(
                 width: MediaQuery.of(context).size.width - 50,
                 animation: true,
                 lineHeight: 20.0,
@@ -108,7 +108,8 @@ class StartState extends State<SplashScreen> {
                 progressColor: Colors.yellow,
                 backgroundColor: Colors.white,
               )*/,
-            )
+            ),visible: false,)
+
           ],
         ),
       ),

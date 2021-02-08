@@ -4,6 +4,7 @@ import 'package:ciblecommerce/CartListAndOrder/AddToCart/DatabaseHelperclass.dar
 import 'package:ciblecommerce/utils/colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:toast/toast.dart';
 
 class WishList extends StatefulWidget{
   @override
@@ -17,13 +18,28 @@ class WishList extends StatefulWidget{
 class WishListUi extends State<WishList>{
   List<CartModel>cartlistdata;
   DatabaseHelper database=DatabaseHelper();
-
+  bool progressbarShow;
+  @override
+  void initState() {
+    // TODO: implement initState
+    progressbarShow=true;
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     if(cartlistdata==null){
       cartlistdata=List<CartModel>();
       getCartListDatas();
     }
+   /* if(cartlistdata.length>=0){
+      progressbarShow=true;
+    }
+    if(cartlistdata.isEmpty){
+      Future.delayed(Duration(seconds: 2),(){
+        progressbarShow=true;
+      });
+    }*/
+
     return Scaffold(
       appBar: AppBar(
           leading: IconButton(
@@ -37,7 +53,7 @@ class WishListUi extends State<WishList>{
             style: TextStyle(color: Colors.black),
           )),
       body:Container(
-        child: wishListview(),
+        child:wishListview(),
       ),
     );
   }
@@ -46,13 +62,15 @@ class WishListUi extends State<WishList>{
     cartList.then((value){
       setState(() {
         cartlistdata=value;
+        progressbarShow=false;
       });
     });
   }
 
   wishListview() {
-    return cartlistdata.length==0?
-        Text("You have no data in wish list"):
+    return cartlistdata.length<1?
+        cartlistdata.isEmpty&&progressbarShow==true?ShowProgressbar():
+        Center(child:Text("You have no data in wish list",style: TextStyle(fontSize: 16,color: Colors.red)),) :
     ListView.builder(
         itemCount: cartlistdata.length,
         itemBuilder: (BuildContext context,int position){
@@ -101,6 +119,21 @@ class WishListUi extends State<WishList>{
                                 fontWeight: FontWeight.bold),) ,) ,
                           SizedBox(height: 5,),
                           Text("MRP:"+cartlistdata[position].product_price+" BDT"),
+                          SizedBox(height:8,),
+
+                          InkWell(onTap:(){
+                            addToCart(cartlistdata[position]);
+                          },
+                          child:Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(2),
+                              shape: BoxShape.rectangle,
+                              border: Border.all(color: CustomColors.red,
+                                  width: 2),
+                            ),
+                            child: Padding(padding: EdgeInsets.all(5),
+                              child: Text("Add To Bag",style: TextStyle(fontWeight: FontWeight.w600),),),
+                          ) ,)
 
                         ],
                       ),
@@ -113,16 +146,34 @@ class WishListUi extends State<WishList>{
         });
   }
 
+  ShowProgressbar() {
+    return Center(
+      child: CircularProgressIndicator(),
+    );
+  }
   void deletewishItem(String product_id, String product_list_type) async{
-    int result = await database.deleteNote(product_id,product_list_type);
+    int result = await database.deleteNote(product_id,"wish");
     if (result != 0) {
+      progressbarShow=true;
       getCartListDatas();
       _showSnackBar(context, 'Wish List Deleted Successfully');
+    }else{
+      Toast.show("Product does not deleted", context, duration: Toast.LENGTH_SHORT, gravity:  Toast.CENTER);
     }
   }
   void _showSnackBar(BuildContext context, String message) {
 
     final snackBar = SnackBar(content: Text(message));
     Scaffold.of(context).showSnackBar(snackBar);
+  }
+
+  void addToCart(CartModel cartModel) async{
+    int result = await database.deleteNote(cartModel.product_id,"wish");
+    int result2=await database.insertNote(CartModel(cartModel.product_id,cartModel.product_title,
+        cartModel.product_description,cartModel.product_price, '1',cartModel.product_image,"true","cart"),"cart");
+    if (result != 0) {
+      getCartListDatas();
+      _showSnackBar(context, 'Add to Bag Successfully');
+    }
   }
 }

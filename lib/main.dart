@@ -8,10 +8,13 @@ import 'package:ciblecommerce/DashBoard/DashBoardUiView/Data/DashBoard_DataRepos
 import 'package:ciblecommerce/HomeScreen/BlocStates/ProductListBlocState/ProductList_Bloc.dart';
 import 'package:ciblecommerce/HomeScreen/Data/repository/Categories_Item.dart';
 import 'package:ciblecommerce/HomeScreen/Data/repository/Product_List_Repository.dart';
+import 'package:ciblecommerce/HomeScreen/UiView/HomeScreen.dart';
 import 'package:ciblecommerce/LoginRegistration/BlocStates/LoginBlocState/Login_Bloc.dart';
 import 'package:ciblecommerce/LoginRegistration/BlocStates/RegistrationBlocStatement/Registration_Bloc.dart';
 import 'package:ciblecommerce/LoginRegistration/Data/Login_Repository.dart';
 import 'package:ciblecommerce/LoginRegistration/Data/Registration_Repository.dart';
+import 'package:ciblecommerce/ProductDetails_OrderList/CategoryWisePList/BlocStates/CategoryListBloc.dart';
+import 'package:ciblecommerce/ProductDetails_OrderList/CategoryWisePList/Data/repository/DataRepository.dart';
 import 'package:ciblecommerce/ProductDetails_OrderList/ProductDetails/BlocStates/ProductDetails_Bloc.dart';
 import 'package:ciblecommerce/ProductDetails_OrderList/ProductDetails/Datas/ProductDetailsRepository.dart';
 import 'package:ciblecommerce/splashScreen/SplashScreen.dart';
@@ -31,7 +34,8 @@ void main(){
       BlocProvider<ChangePasswordBloc>(create: (_)=>ChangePasswordBloc(changePassword_Repository: ChangePassword_RepositoryImp()),),
       BlocProvider<DashBoardBloc>(create: (_)=>DashBoardBloc(dashBoardDataRepository: DashBoardDataRepositoryImp()),),
       BlocProvider<AccountInfoEdit_Bloc>(create: (_)=>AccountInfoEdit_Bloc(accountInfoEditRepository: AccountInfoEditRepositoryImp()),),
-      BlocProvider<ProductDetailsBloc>(create: (_)=>ProductDetailsBloc(productDetailsRepository: ProductDetailsRepositoryImp()),)
+      BlocProvider<ProductDetailsBloc>(create: (_)=>ProductDetailsBloc(productDetailsRepository: ProductDetailsRepositoryImp()),),
+      BlocProvider<CategoryListBloc>(create: (_)=>CategoryListBloc(categoryDataListRepository: ImpCategoryDataListRepository()),)
     ],
     child: MyApp(),
   )
@@ -49,11 +53,13 @@ class MyApp extends StatelessWidget {
             color: Colors.white,
           )),
       debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
+      home: /*SplashScreen()*/
+      Home(),
 
     );
   }
 }
+
 
 //class MyApp extends StatelessWidget {
 //  // This widget is the root of your application.

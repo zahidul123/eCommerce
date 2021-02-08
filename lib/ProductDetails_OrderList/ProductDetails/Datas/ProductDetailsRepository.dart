@@ -11,9 +11,6 @@ class ProductDetailsRepositoryImp extends ProductDetailsRepository {
   @override
   Future getProductDetailsrepository({String Product_id/*, String company_id*/})async {
     try{
-      Map body={
-        "product_id":Product_id
-      };
       final response=await http.post(Configuration.BASE_URL+"api/products/get_product/$Product_id",);
 
       if(response.statusCode==200){

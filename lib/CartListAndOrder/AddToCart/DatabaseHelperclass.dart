@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:ciblecommerce/CartListAndOrder/AddToCart/Cartmodel.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -17,6 +18,7 @@ class DatabaseHelper {
   String product_quantity = 'product_quantity';
   String product_image = 'product_image';
   String product_list_type = 'product_list_type';
+  String product_select="product_select";
 
   DatabaseHelper.createinstance(); // Named constructor to create instance of DatabaseHelper
   factory DatabaseHelper() {
@@ -48,17 +50,25 @@ class DatabaseHelper {
 
   FutureOr<void> _createDb(Database db, int version) async{
     await db.execute('CREATE TABLE $table_Name($colId INTEGER PRIMARY KEY AUTOINCREMENT, $product_id TEXT, $product_title TEXT, '
-        '$product_description TEXT, $product_price TEXT, $product_quantity TEXT, $product_image TEXT, $product_list_type TEXT)');
+        '$product_description TEXT, $product_price TEXT, $product_quantity TEXT, $product_image TEXT,$product_select TEXT, $product_list_type TEXT)');
   }
   // Delete Operation: Delete a Note object from database
   Future<int> deleteNote(String id,String list_type) async {
     var db = await this.database;
-    int result = await db.rawDelete('DELETE FROM $table_Name WHERE $product_id = $id');
-    return result;
+    try{
+     // int result = await db.rawDelete('DELETE FROM $table_Name WHERE $product_id = $id AND $product_list_type = $list_type');
+      int result = await db.delete(table_Name, where: '$product_id = ? and $product_list_type = ?', whereArgs: [id,list_type]);
+     // db.close();
+      return result;
+    }catch(e){
+      return 0;
+    }
+
   }
   Future<int> updateNote(CartModel note) async {
     var db = await this.database;
     var result = await db.update(table_Name, note.MaketoMap(), where: '$product_id = ?', whereArgs: [note.product_id]);
+    //db.close();
     return result;
   }
   // Fetch Operation: Get all note objects from database
@@ -67,6 +77,7 @@ class DatabaseHelper {
 
 //		var result = await db.rawQuery('SELECT * FROM $noteTable order by $colPriority ASC');
     var result = await db.query(table_Name,where: '$product_list_type=?',whereArgs: [listType] );
+
     return result;
   }
   // Get the 'Map List' [ List<Map> ] and convert it to 'Note List' [ List<Note> ]
@@ -85,10 +96,26 @@ class DatabaseHelper {
   }
 
   // Insert Operation: Insert a Note object to database
-  Future<int> insertNote(CartModel model) async {
+  Future<int> insertNote(CartModel model,String type) async {
     Database db = await this.database;
-    var result = await db.insert(table_Name, model.MaketoMap());
-    return result;
+    String p_id=model.product_id;
+    try{
+      var fetchData=await db.query(table_Name,where: '$product_list_type=? and $product_id=?',whereArgs: [type,p_id]);
+      if(fetchData.length<1){
+        var result = await db.insert(table_Name, model.MaketoMap());
+     //   db.close();
+        return result;
+      }else{
+        return 0;
+      }
+     // var fetchData1=await db.rawQuery('SELECT * FROM $table_Name WHERE $product_id = "38" AND $product_list_type = "wish"');
+    }catch(e){
+      print("$e");
+      return 0;
+    }
+
+
+
   }
 
 }

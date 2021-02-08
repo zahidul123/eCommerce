@@ -6,6 +6,7 @@ class CartModel {
   String product_quantity;
   String product_image;
   String product_list_type;
+  String productSelect;
 
   CartModel(
       this.product_id,
@@ -14,6 +15,7 @@ class CartModel {
       this.product_price,
       this.product_quantity,
       this.product_image,
+      this.productSelect,
       this.product_list_type);
 
   Map<String, dynamic> MaketoMap() {
@@ -27,6 +29,7 @@ class CartModel {
     map["product_quantity"] = product_quantity;
     map["product_image"] = product_image;
     map["product_list_type"] = product_list_type;
+    map["product_select"] = productSelect;
     return map;
   }
 
@@ -39,5 +42,6 @@ class CartModel {
     this.product_quantity = map["product_quantity"];
     this.product_image = map["product_image"];
     this.product_list_type = map["product_list_type"];
+    this.productSelect=map["product_select"];
   }
 }

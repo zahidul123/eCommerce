@@ -18,7 +18,7 @@ class AccountInfoEdit_Bloc
     var response;
     if (event is FetchAccountInfoEditEvent) {
       yield AccountInfoEditLoadingState();
-       response= accountInfoEditRepository
+       response=await accountInfoEditRepository
           .getAccountInfoEditRepositoryResponse(user_id: event.user_id,
           first_name: event.first_name,
           last_name: event.last_name,

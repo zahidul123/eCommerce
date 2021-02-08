@@ -319,19 +319,6 @@ class RegistrationUiDesign extends State<RegistrationUi> {
                       //registrationBloc.close();
                       WidgetsBinding.instance.addPostFrameCallback((_){
                         registrationBloc.add(InitialEvent());
-                        /* SweetAlert.show(context,
-                            subtitle: "Your Login Success",
-                            style: SweetAlertStyle.success,
-                            showCancelButton: false, onPress: (bool isConfirm) {
-
-                              if(isConfirm){
-                                Navigator.pushReplacement(context, MaterialPageRoute(
-                                    builder: (context) => Home()
-                                )
-                                );
-                              }
-                              return false;
-                            });*/
 
                         alertdialog.successSweetAlert(context, "Your Registration Successfully complete ", "success", () => LoginRegUI());
                       });

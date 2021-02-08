@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:ciblecommerce/DashBoard/ChangePassword/UiView/PasswordResetUi.dart';
 import 'package:ciblecommerce/ForgotPassword/UiView/ForgotPasswordUi.dart';
 import 'package:ciblecommerce/LoginRegistration/BlocStates/LoginBlocState/Login_Bloc.dart';
 import 'package:ciblecommerce/LoginRegistration/BlocStates/LoginBlocState/Login_Event.dart';
@@ -55,7 +56,8 @@ class CompleteUiDesign extends State<LoginRegUI>{
               Padding(padding: EdgeInsets.only(top: 15),
                child:InkWell(
                  child: Icon(Icons.cancel,),
-                 onTap: ()=>Navigator.of(context).pop(),
+                 onTap: ()=>Navigator.of(context).pushAndRemoveUntil( MaterialPageRoute(
+                     builder: (context) => Home()), (route) => false),
                )),
             ],
           ) ,),
@@ -64,7 +66,6 @@ class CompleteUiDesign extends State<LoginRegUI>{
              Container(
                height: 100,
                width: 140,
-
                decoration: BoxDecoration(
                    image: DecorationImage(
                        image: AssetImage("assets/ic_icons/ciblLogo.png"),
@@ -152,7 +153,7 @@ class CompleteUiDesign extends State<LoginRegUI>{
                   SizedBox(height: MediaQuery.of(context).size.height*.03,),
                   InkWell(
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=>ForgotPassword()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>PasswordResetUi()));
                     },
                     child:Padding(padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*.08),
                       child: Text("Forgot your password?",textAlign: TextAlign.right,style:TextStyle(fontSize: 14,color: Colors.green)),) ,

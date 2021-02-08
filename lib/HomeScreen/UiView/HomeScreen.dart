@@ -1,7 +1,10 @@
-
 import 'package:ciblecommerce/CartListAndOrder/AddToCart/Cartmodel.dart';
+import 'package:ciblecommerce/widgets/ProductCardWidget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ciblecommerce/CartListAndOrder/AddToCart/DatabaseHelperclass.dart';
 import 'package:ciblecommerce/CartListAndOrder/CartListUi/CartListUi.dart';
+import 'package:ciblecommerce/ProductDetails_OrderList/CategoryWisePList/UiView/CategoryList.dart';
+import 'package:ciblecommerce/widgets/BottomNavigationBar.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:ciblecommerce/DashBoard/DashBoardUiView/UiView/DashBoardUiView.dart';
 import 'package:ciblecommerce/ProductDetails_OrderList/ProductDetails/UiView/ProductDetailsUi.dart';
@@ -35,7 +38,6 @@ class Home extends StatefulWidget {
 }
 
 class HomeScreen extends State<Home> with SingleTickerProviderStateMixin {
-
   TextEditingController searchcontroll = TextEditingController();
   int _selectedIndex = 0;
   int _currentIndex = 0;
@@ -46,11 +48,11 @@ class HomeScreen extends State<Home> with SingleTickerProviderStateMixin {
     'https://images.unsplash.com/photo-1543922596-b3bbaba80649?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60',
     'https://images.unsplash.com/photo-1502943693086-33b5b1cfdf2f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=668&q=80'
   ];
-  List<CatList>categoryList;
-  List<ProductList>productListtemp;
+  List<CatList> categoryList;
+  List<ProductList> productListtemp;
 
-  List<CartModel>cartListNav;
-  List<CartModel>wishListNav;
+  List<CartModel> cartListNav;
+  List<CartModel> wishListNav;
   TabController _tabController;
   BooklistCategoryBloc booklistbloc;
   ProductListBloc productListBloc;
@@ -59,49 +61,48 @@ class HomeScreen extends State<Home> with SingleTickerProviderStateMixin {
   bool checkloginstatus;
   bool checkCartData;
   bool checkWishData;
+
   @override
   void initState() {
     // TODO: implement initState
     permissionStatus();
-    internetconnected=false;
-    configuration=Configuration();
+    internetconnected = false;
+    configuration = Configuration();
     checkConntction();
-      categoryList=List<CatList>();
-      productListtemp=List<ProductList>();
-      booklistbloc = BlocProvider.of<BooklistCategoryBloc>(context);
-      booklistbloc.add(FetchBooklistCategoryEvent());
-      productListBloc=BlocProvider.of<ProductListBloc>(context);
-      productListBloc.add(FetchProductListEvent());
-      _tabController = new TabController(length: 3, vsync: this);
-      checkloginstatus=false;
-      checkCartData=false;
-      checkWishData=false;
-      getCartWishData();
-     cartListNav=List<CartModel>();
-     wishListNav=List<CartModel>();
+    categoryList = List<CatList>();
+    productListtemp = List<ProductList>();
+    booklistbloc = BlocProvider.of<BooklistCategoryBloc>(context);
+    booklistbloc.add(FetchBooklistCategoryEvent());
+    productListBloc = BlocProvider.of<ProductListBloc>(context);
+    productListBloc.add(FetchProductListEvent());
+    _tabController = new TabController(length: 3, vsync: this);
+    checkloginstatus = false;
+    checkCartData = false;
+    checkWishData = false;
+    getCartWishData();
+    cartListNav = List<CartModel>();
+    wishListNav = List<CartModel>();
     super.initState();
   }
-  int wishlistlength=0;
-  int cartlistlength=0;
+
+  int wishlistlength = 0;
+  int cartlistlength = 0;
+
   @override
   Widget build(BuildContext context) {
+    wishlistlength = wishListNav.length;
 
-    wishlistlength=wishListNav.length;
-
-    if(cartListNav.length>0){
-        checkCartData=true;
-
+    if (cartListNav.length > 0) {
+      checkCartData = true;
     }
-    if(wishListNav.length>0){
-
-      checkWishData=true;
-
+    if (wishListNav.length > 0) {
+      checkWishData = true;
     }
-    if(checkloginstatus==true){
+    if (checkloginstatus == true) {
       retriveDatas();
     }
 
-    cartlistlength=cartListNav.length;
+    cartlistlength = cartListNav.length;
 
     // final BooklistCategoryBloc bloc = BlocProvider.of<BooklistCategoryBloc>(context);
     // TODO: implement build
@@ -109,30 +110,31 @@ class HomeScreen extends State<Home> with SingleTickerProviderStateMixin {
       onWillPop: onBackPressed, //this is back pressed button
       child: Builder(
         builder: (context) {
-          return internetconnected?
-          Scaffold(
-            appBar: AppBar(
-              elevation: 0,
-              iconTheme: IconThemeData(color: CustomColors.optimal_black),
-              title: Center(
-                  child: Text("CIBL E-Commerce",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: CustomColors.optimal_black))),
-              actions: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(right: 20.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=>OrderlistUi()));
-                    },
-                    child: Stack(
-                      children: <Widget>[
-                        Center(
-                            child: Padding(
-                          padding: EdgeInsets.only(right: 5),
-                             child: Icon(Icons.shop),
-                        )),
-                        Positioned(
+          return internetconnected
+              ? Scaffold(
+                  appBar: AppBar(
+                    elevation: 0,
+                    iconTheme: IconThemeData(color: CustomColors.optimal_black),
+                    title: Center(
+                        child: Text("CIBL E-Commerce",
+                            textAlign: TextAlign.center,
+                            style:
+                                TextStyle(color: CustomColors.optimal_black))),
+                    actions: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(right: 20.0),
+                        child: GestureDetector(
+                          onTap: () {
+                            checkOrderUserLogin();
+                          },
+                          child: Stack(
+                            children: <Widget>[
+                              Center(
+                                  child: Padding(
+                                padding: EdgeInsets.only(right: 5),
+                                child: Icon(Icons.shop),
+                              )),
+                              /*Positioned(
                           top: 4,
                           right: 0,
                           child: new Container(
@@ -157,235 +159,271 @@ class HomeScreen extends State<Home> with SingleTickerProviderStateMixin {
                               ),
                             ),
                           ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            drawer: buildNavDrawer(context),
-            body: Container(
-              child: Column(
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 12),
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      height: 50,
-                      decoration: BoxDecoration(
-                          color: Color(0xffEFEFEF),
-                          borderRadius: BorderRadius.circular(10)),
-                      child: Row(
-                        children: <Widget>[
-                          Flexible(
-                            child: InkWell(
-                              onTap: ()=>Navigator.push(context, MaterialPageRoute(builder: (context)=>SearchProduct(categoryList,productListtemp))),
-                              child: TextField(
-                                onChanged: (value) {},
-                                style: TextStyle(color: CustomColors.optimal_black),
-                                controller: searchcontroll,
-                                decoration: InputDecoration(
-                                    hintText: "Search",
-                                    prefixIcon:
-                                    Icon(Icons.search, color: CustomColors.optimal_black),
-                                    border: InputBorder.none),
-                                enabled: false,
-                              ),
-                            ),
-
+                        )*/
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 12),
-                      child: ListView(
-                        children: <Widget>[
-                          Container(
-
-                            child: CarouselSlider(
-                                items: imgList.map((images) {
-                                  return Builder(
-                                      builder: (BuildContext context) {
-                                    return Container(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.30,
-                                      width: MediaQuery.of(context).size.width,
-                                      child: Card(
-                                        color: Colors.blueAccent,
-                                        child: Image.network(
-                                          images,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    );
-                                  });
-                                }).toList(),
-                                options: CarouselOptions(
-                                  height: 120,
-                                  aspectRatio: 16 / 3,
-                                  viewportFraction: 1,
-                                  initialPage: 0,
-                                  enableInfiniteScroll: true,
-                                  reverse: false,
-                                  autoPlay: true,
-                                  autoPlayInterval: Duration(seconds: 3),
-                                  autoPlayAnimationDuration:
-                                      Duration(milliseconds: 800),
-                                  autoPlayCurve: Curves.fastOutSlowIn,
-                                  enlargeCenterPage: true,
-                                  scrollDirection: Axis.horizontal,
-                                )
-                            ),
-                          ),
-                          SizedBox(
-                            height: 2,
-                          ),
-                          Container(
-                            height: 70,
+                  drawer: buildNavDrawer(context),
+                  body: Container(
+                    child: Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 12),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            height: 50,
+                            decoration: BoxDecoration(
+                                color: Color(0xffEFEFEF),
+                                borderRadius: BorderRadius.circular(10)),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
-                                Expanded(
-                                  child: getNewsFeed(),
-                                ),
-                                Expanded(child: getGiftCards()),
-                                Expanded(
-                                  child: getcampaining(),
-                                ),
-                                Expanded(
-                                  child: getOrder(),
+                                Flexible(
+                                  child: InkWell(
+                                    onTap: () => Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => SearchProduct(
+                                                categoryList,
+                                                productListtemp))),
+                                    child: TextField(
+                                      onChanged: (value) {},
+                                      style: TextStyle(
+                                          color: CustomColors.optimal_black),
+                                      controller: searchcontroll,
+                                      decoration: InputDecoration(
+                                          hintText: "Search",
+                                          prefixIcon: Icon(Icons.search,
+                                              color:
+                                                  CustomColors.optimal_black),
+                                          border: InputBorder.none),
+                                      enabled: false,
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
                           ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Card(
-                            child: Container(height: 2, color: Colors.grey),
-                          ),
-                          Card(
-                            child: Container(
-                              height: 500,
-                              child: Scaffold(
-                                appBar: PreferredSize(
-                                    preferredSize: Size.fromHeight(50.0),
-                                    // here the desired height
-                                    child: AppBar(
-                                      elevation: 0,
-                                      bottom: TabBar(
-                                        unselectedLabelColor: Colors.black38,
-                                        labelColor: Colors.black,
-                                        tabs: [
-                                          Tab(
-                                            /*icon:Icon(Icons.call)*/
-                                            text: "Categoris",
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 5),
+                            child: ListView(
+                              children: <Widget>[
+                                Container(
+                                  child: CarouselSlider(
+                                      items: imgList.map((images) {
+                                        return Builder(
+                                            builder: (BuildContext context) {
+                                          return Container(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.30,
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            child: Card(
+                                              color: Colors.blueAccent,
+                                              child: Image.network(
+                                                images,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          );
+                                        });
+                                      }).toList(),
+                                      options: CarouselOptions(
+                                        height: 120,
+                                        aspectRatio: 16 / 3,
+                                        viewportFraction: 1,
+                                        initialPage: 0,
+                                        enableInfiniteScroll: true,
+                                        reverse: false,
+                                        autoPlay: true,
+                                        autoPlayInterval: Duration(seconds: 3),
+                                        autoPlayAnimationDuration:
+                                            Duration(milliseconds: 800),
+                                        autoPlayCurve: Curves.fastOutSlowIn,
+                                        enlargeCenterPage: true,
+                                        scrollDirection: Axis.horizontal,
+                                      )),
+                                ),
+                                SizedBox(
+                                  height: 2,
+                                ),
+                                Visibility(
+                                    visible: false,
+                                    child: Container(
+                                      height: 70,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: <Widget>[
+                                          Expanded(
+                                            child: getNewsFeed(),
                                           ),
-                                          Tab(
-                                            /*icon:Icon(Icons.chat)*/
-                                            text: "Brands",
+                                          Expanded(child: getGiftCards()),
+                                          Expanded(
+                                            child: getcampaining(),
                                           ),
-                                          Tab(
-                                            /*icon:  Icon(Icons.notifications)*/
-                                            text: "Products",
-                                          )
+                                          Expanded(
+                                            child: getOrder(),
+                                          ),
+                                        ],
+                                      ),
+                                    )),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Card(
+                                  child:
+                                      Container(height: 2, color: Colors.grey),
+                                ),
+                                Card(
+                                  margin: EdgeInsets.symmetric(horizontal: 3),
+                                  child: Container(
+                                    height: 500,
+                                    child: Scaffold(
+                                      appBar: PreferredSize(
+                                          preferredSize: Size.fromHeight(50.0),
+                                          // here the desired height
+                                          child: AppBar(
+                                            elevation: 0,
+                                            bottom: TabBar(
+                                              unselectedLabelColor:
+                                                  Colors.black38,
+                                              labelColor: Colors.black,
+                                              tabs: [
+                                                Tab(
+                                                  /*icon:Icon(Icons.call)*/
+                                                  text: "Categoris",
+                                                ),
+                                                Tab(
+                                                  /*icon:Icon(Icons.chat)*/
+                                                  text: "Brands",
+                                                ),
+                                                Tab(
+                                                  /*icon:  Icon(Icons.notifications)*/
+                                                  text: "Products",
+                                                )
+                                              ],
+                                              controller: _tabController,
+                                              indicatorColor: Colors.green,
+                                              indicatorSize:
+                                                  TabBarIndicatorSize.tab,
+                                            ),
+                                            bottomOpacity: 1,
+                                          )),
+                                      body: TabBarView(
+                                        children: [
+                                          Container(
+                                            child: BlocListener<
+                                                BooklistCategoryBloc,
+                                                BooklistCategoryState>(
+                                              listener: (context, state) {
+                                                if (state
+                                                    is BooklistCategoryErrorState) {
+                                                  Scaffold.of(context)
+                                                      .showSnackBar(
+                                                    SnackBar(
+                                                      content: Text(
+                                                          state.errormessage),
+                                                    ),
+                                                  );
+                                                }
+                                              },
+                                              child: BlocBuilder<
+                                                  BooklistCategoryBloc,
+                                                  BooklistCategoryState>(
+                                                builder: (context, state) {
+                                                  if (state
+                                                      is BooklistCategoryInitialState) {
+                                                    return buildLoading();
+                                                  } else if (state
+                                                      is BooklistCategoryLoadingState) {
+                                                    return buildLoading();
+                                                  } else if (state
+                                                      is BooklistCategoryLoadedState) {
+                                                    List<CatList> booklist =
+                                                        List<CatList>();
+                                                    booklist = state.booklist;
+                                                    if (booklist.length > 0) {
+                                                      categoryList
+                                                          .addAll(booklist);
+                                                    }
+                                                    return buildArticleList(
+                                                        state.booklist);
+                                                  } else {
+                                                    BooklistCategoryErrorState
+                                                        builde =
+                                                        BooklistCategoryErrorState();
+                                                    return buildErrorUi(
+                                                        builde.errormessage);
+                                                  }
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                          Text("This is chat Tab View"),
+                                          Container(
+                                            child: BlocBuilder<ProductListBloc,
+                                                ProductListState>(
+                                              builder: (context, state) {
+                                                if (state
+                                                    is ProductListInitialState) {
+                                                  return buildLoading();
+                                                } else if (state
+                                                    is ProductListLoadingState) {
+                                                  return buildLoading();
+                                                } else if (state
+                                                    is ProductListLoadedState) {
+                                                  return buildProductList(
+                                                      state.productList);
+                                                } else {
+                                                  ProductListErrorState error =
+                                                      ProductListErrorState();
+                                                  return buildErrorUi(
+                                                      error.message);
+                                                }
+                                              },
+                                            ),
+                                          ),
                                         ],
                                         controller: _tabController,
-                                        indicatorColor: Colors.green,
-                                        indicatorSize: TabBarIndicatorSize.tab,
-                                      ),
-                                      bottomOpacity: 1,
-                                    )),
-                                body: TabBarView(
-
-                                  children: [
-                                    Container(
-
-                                      child: BlocListener<BooklistCategoryBloc,
-                                          BooklistCategoryState>(
-                                        listener: (context, state) {
-                                          if (state
-                                              is BooklistCategoryErrorState) {
-                                            Scaffold.of(context).showSnackBar(
-                                              SnackBar(
-                                                content:
-                                                    Text(state.errormessage),
-                                              ),
-                                            );
-                                          }
-                                        },
-                                        child: BlocBuilder<BooklistCategoryBloc,
-                                            BooklistCategoryState>(
-                                          builder: (context, state) {
-                                            if (state
-                                                is BooklistCategoryInitialState) {
-                                              return buildLoading();
-                                            } else if (state
-                                                is BooklistCategoryLoadingState) {
-                                              return buildLoading();
-                                            } else if (state
-                                                is BooklistCategoryLoadedState) {
-                                              List<CatList> booklist=List<CatList>();
-                                              booklist=state.booklist;
-                                              if(booklist.length>0){
-                                                  categoryList.addAll(booklist);
-                                              }
-                                              return buildArticleList(state.booklist);
-                                            } else {
-                                              BooklistCategoryErrorState
-                                                  builde = BooklistCategoryErrorState();
-                                              return buildErrorUi(builde.errormessage);
-                                            }
-                                          },
-                                        ),
                                       ),
                                     ),
-                                    Text("This is chat Tab View"),
-
-                                    Container(
-
-                                         child: BlocBuilder<ProductListBloc,ProductListState>(
-                                        builder: (context,state){
-                                          if(state is ProductListInitialState ){
-                                            return buildLoading();
-                                          }else if(state is ProductListLoadingState){
-                                            return buildLoading();
-                                          }else if(state is ProductListLoadedState){
-                                            return buildProductList(state.productList);
-                                          }else{
-                                            ProductListErrorState error=ProductListErrorState();
-                                            return buildErrorUi(error.message);
-                                          }
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                  controller: _tabController,
+                                  ),
                                 ),
-                              ),
+                              ],
                             ),
                           ),
-                        ],
+                        )
+                      ],
+                    ),
+                  ),
+                  bottomNavigationBar: BottomNavigationWidget(),
+                )
+              : Scaffold(
+                  body: Container(
+                    child: Center(
+                      child: Text(
+                        "please check your internet connection",
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: CustomColors.red,
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
-                  )
-                ],
-              ),
-            ),
-            bottomNavigationBar: buildBottomNavBar(),
-          ):
-          Scaffold(body: Container(
-            child: Center(child: Text("please check your internet connection",style: TextStyle(fontSize: 20,color: CustomColors.red,fontWeight: FontWeight.bold),),),
-          ),);
+                  ),
+                );
         },
       ),
     );
@@ -447,130 +485,13 @@ class HomeScreen extends State<Home> with SingleTickerProviderStateMixin {
                 title: Text("My order"),
                 onTap: () {
                   Navigator.of(context).pop();
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>OrderlistUi()));
+                  checkOrderUserLogin();
                 },
               ),
             ]),
           )
         ],
       ),
-    );
-  }
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-      if (index == 3) {
-        checkuserLogin();
-
-      } else if (index == 2) {
-        checkCartuserLogin();
-      } else if (index == 1) {
-        checkWishuserLogin();
-
-      }
-    });
-  }
-
-  Widget buildBottomNavBar() {
-    return BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
-      items: [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          title: Text('Home'),
-        ),
-        BottomNavigationBarItem(
-            icon: checkloginstatus==true&&checkWishData==true?
-            Stack(
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(right: 10),
-                  child: Icon(Icons.favorite_border),
-                ),
-                Positioned(
-                  top: -1,
-                  right: 1,
-                  child: Container(
-                    padding: EdgeInsets.all(3),
-                    decoration: new BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                    constraints: BoxConstraints(
-                      minWidth: 18,
-                      minHeight: 18,
-                    ),
-                    child: Text(
-                      '${wishlistlength}',
-                      style: new TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                )
-              ],
-            ):
-            checkloginstatus==true&&checkWishData==false?Padding(
-              padding: EdgeInsets.only(right: 10),
-              child: Icon(Icons.favorite_border),
-            ):Padding(
-              padding: EdgeInsets.only(right: 10),
-              child: Icon(Icons.favorite_border),
-            ),
-            title: Text('Wish List'),
-            backgroundColor: Colors.blue),
-        BottomNavigationBarItem(
-          icon: checkloginstatus==true&&checkCartData==true?
-          Stack(
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.only(right: 10),
-                child: Icon(Icons.add_shopping_cart),
-              ),
-              Positioned(
-                top: -.5,
-                right: 3,
-                child: Container(
-                  padding: EdgeInsets.all(3),
-                  decoration: new BoxDecoration(
-                    color: Colors.red,
-                    borderRadius: BorderRadius.circular(100),
-                  ),
-                  constraints: BoxConstraints(
-                    minWidth: 18,
-                    minHeight: 18,
-                  ),
-                  child: Text(
-                    '${cartListNav.length}',
-                    style: new TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              )
-            ],
-          ):
-          checkloginstatus==true&&checkCartData==false?Padding(
-            padding: EdgeInsets.only(right: 10),
-            child: Icon(Icons.add_shopping_cart),
-          ):
-          Padding(
-            padding: EdgeInsets.only(right: 10),
-            child: Icon(Icons.add_shopping_cart),
-          ),
-          title: Text('Cart'),
-        ),
-        BottomNavigationBarItem(
-            icon: Icon(Icons.supervisor_account), title: Text("Dashboard")),
-      ],
-      currentIndex: _selectedIndex,
-      selectedItemColor: Colors.amber[800],
-      onTap: _onItemTapped,
     );
   }
 
@@ -670,15 +591,15 @@ class HomeScreen extends State<Home> with SingleTickerProviderStateMixin {
     );
   }
 
-  Widget colobuildArticleList(List<CatList> booklist) {
+  Widget buildArticleList(List<CatList> booklist) {
     categoryList.clear();
     categoryList.addAll(booklist);
 
     return GridView.builder(
         shrinkWrap: false,
         itemCount: booklist.length,
-        physics: ScrollPhysics()/*NeverScrollableScrollPhysics()*/,
-        padding: EdgeInsets.only(left: 16,right: 16,bottom: 65),
+        physics: ScrollPhysics() /*NeverScrollableScrollPhysics()*/,
+        padding: EdgeInsets.only(left: 16, right: 16, bottom: 65),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
           mainAxisSpacing: 10,
@@ -706,27 +627,35 @@ class HomeScreen extends State<Home> with SingleTickerProviderStateMixin {
                                 color: Colors.white,
                                 image: DecorationImage(
                                   fit: BoxFit.cover,
-                                  image: AssetImage('assets/ic_icons/lather.jpg'),
+                                  image:
+                                      AssetImage('assets/ic_icons/lather.jpg'),
                                 ))),
                       ),
                       Expanded(
-                          child: Padding(
-                            child:FittedBox(child: Text(booklist[position].categoryName,
+                        child: Padding(
+                          child: FittedBox(
+                            child: Text(
+                              booklist[position].categoryName,
                               style: TextStyle(fontStyle: FontStyle.italic),
-                              textAlign: TextAlign.center,),
-                              fit: BoxFit.scaleDown,),
-                            padding: EdgeInsets.all(5),
+                              textAlign: TextAlign.center,
+                            ),
+                            fit: BoxFit.scaleDown,
                           ),
-                      )
+                          padding: EdgeInsets.all(5),
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ),
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ProductDetailsUi(product_id: categoryList[position].categoryId)));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => CategoryWiseData(
+                            category_id: categoryList[position].categoryId)));
               },
-            ) ,
+            ),
           );
         });
     /*ListView.builder(
@@ -752,7 +681,7 @@ class HomeScreen extends State<Home> with SingleTickerProviderStateMixin {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Text(
-          errormessage==null?"No data found":errormessage,
+          errormessage == null ? "No data found" : errormessage,
           style: TextStyle(color: Colors.red),
         ),
       ),
@@ -789,141 +718,155 @@ class HomeScreen extends State<Home> with SingleTickerProviderStateMixin {
     productListtemp.clear();
     productListtemp.addAll(productList);
     return GridView.builder(
-        shrinkWrap: true,
         itemCount: productList.length,
         physics: ScrollPhysics(),
-        padding: EdgeInsets.only(left: 16,right: 16,bottom: 65)/*symmetric(horizontal: 16)*/,
+        padding: EdgeInsets.only(
+            left: 5, right: 5, bottom: 65) /*symmetric(horizontal: 16)*/,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
           mainAxisSpacing: 10,
-          crossAxisSpacing: 10,
-          childAspectRatio: 1,
+          crossAxisSpacing: 5,
+          childAspectRatio: 0.9,
         ),
         itemBuilder: (context, position) {
-          return InkWell(
-            child: Card(
-              elevation: 5,
-              child: Container(
-                height: 50,
-                child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.all(5),
-                      child: Container(
-                          width: MediaQuery.of(context).size.width * .48,
-                          height: MediaQuery.of(context).size.width * .28,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(4),
-                              color: Colors.white,
-                              image: DecorationImage(
-                                fit: BoxFit.cover,
-                                image: AssetImage('assets/ic_icons/lather.jpg'),
-                              ))),
-                    ),
-                    Expanded(
-                      child: Padding(
-                        child:FittedBox(child: Text(productList[position].categoryName,
-                          style: TextStyle(fontStyle: FontStyle.italic),
-                          textAlign: TextAlign.center,),
-                          fit: BoxFit.scaleDown,),
-                        padding: EdgeInsets.all(5),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ProductDetailsUi(product_id: productList[position].productId)));
-            },
-          );
+          return ProductCardWidget(productListtemp[position]);
         });
-
   }
 
   Future permissionStatus() async {
-    var status=await Permission.phone.status;
-    if(!status.isGranted){
+    var status = await Permission.phone.status;
+    if (!status.isGranted) {
       Map<Permission, PermissionStatus> statuses = await [
         Permission.location,
         Permission.phone,
       ].request();
     }
-
   }
 
   Future checkuserLogin() async {
-    final logincheck= await LoginCheck.checkUserLogin();
-    if(logincheck =="Logged"){
-      Navigator.push(context, MaterialPageRoute(builder: (context) => DashBoard()));
-    }else
-      Navigator.push(context, MaterialPageRoute(builder: (context) => LoginRegUI(key: Key("HomeScreen"),)));
+    final logincheck = await LoginCheck.checkUserLogin();
+    if (logincheck == "Logged") {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => DashBoard()));
+    } else
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => LoginRegUI(
+                    key: Key("HomeScreen"),
+                  )));
+  }
 
+  Future checkOrderUserLogin() async {
+    final logincheck = await LoginCheck.checkUserLogin();
+    if (logincheck == "Logged") {
+      SharedPreferences sharedPreferences =
+          await SharedPreferences.getInstance();
+      String user_id = sharedPreferences.getString("user_id");
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => OrderlistUi(user_id)));
+    } else
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => LoginRegUI(
+                    key: Key("HomeScreen"),
+                  )));
   }
 
   void checkCartuserLogin() async {
-    final logincheck= await LoginCheck.checkUserLogin();
-    if(logincheck =="Logged"){
-      Navigator.push(context, MaterialPageRoute(builder: (context) => CartListUi()));
-    }else
-      Navigator.push(context, MaterialPageRoute(builder: (context) => LoginRegUI(key: Key("HomeScreen"),)));
-
+    final logincheck = await LoginCheck.checkUserLogin();
+    if (logincheck == "Logged") {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => CartListUi()));
+    } else
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => LoginRegUI(
+                    key: Key("HomeScreen"),
+                  )));
   }
 
   void checkWishuserLogin() async {
-    final logincheck= await LoginCheck.checkUserLogin();
-    if(logincheck =="Logged"){
-      Navigator.push(context, MaterialPageRoute(builder: (context) => WishList()));
-    }else
-      Navigator.push(context, MaterialPageRoute(builder: (context) => LoginRegUI(key: Key("HomeScreen"),)));
-
+    final logincheck = await LoginCheck.checkUserLogin();
+    if (logincheck == "Logged") {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => WishList()));
+    } else
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => LoginRegUI(
+                    key: Key("HomeScreen"),
+                  )));
   }
 
-   checkConntction() async{
-     var connectivityResult = await (Connectivity().checkConnectivity());
-     if (connectivityResult == ConnectivityResult.mobile) {
-       setState(() {
-     internetconnected=true;
-     });
-     } else if (connectivityResult == ConnectivityResult.wifi) {
-       setState(() {
-         internetconnected=true;
-       });
-     }else{
-       setState(() {
-         internetconnected=false;
-       });
-     }
-
+  checkConntction() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile) {
+      setState(() {
+        internetconnected = true;
+      });
+    } else if (connectivityResult == ConnectivityResult.wifi) {
+      setState(() {
+        internetconnected = true;
+      });
+    } else {
+      setState(() {
+        internetconnected = false;
+      });
+    }
   }
 
-   getCartWishData() async {
-     final logincheck= await LoginCheck.checkUserLogin();
-     if(logincheck =="Logged"){
-       setState(() {
-         checkloginstatus=true;
-       });
-       retriveDatas();
-     }
-
-   }
+  getCartWishData() async {
+    final logincheck = await LoginCheck.checkUserLogin();
+    if (logincheck == "Logged") {
+      setState(() {
+        checkloginstatus = true;
+      });
+      retriveDatas();
+    }
+  }
 
   void retriveDatas() {
-    DatabaseHelper database=DatabaseHelper();
-    Future<List<CartModel>>cartList=database.getSavedProductList("cart");
-    cartList.then((value){
+    DatabaseHelper database = DatabaseHelper();
+    Future<List<CartModel>> cartList = database.getSavedProductList("cart");
+    cartList.then((value) {
       setState(() {
-
-        cartListNav=value;
+        cartListNav = value;
       });
     });
-    Future<List<CartModel>>wishList=database.getSavedProductList("wish");
-    wishList.then((value){
+    Future<List<CartModel>> wishList = database.getSavedProductList("wish");
+    wishList.then((value) {
       setState(() {
-        wishListNav=value;
+        wishListNav = value;
       });
     });
+  }
 
+  _showPopupMenue() {
+
+   return Container(color: Colors.red,);
+   /* showMenu<String>(
+      context: context,
+      position: RelativeRect.fromLTRB(1000.0, 1000.0, 0.0, 0.0),
+      items: [
+        PopupMenuItem<String>(child: const Text('menu option 1'), value: '1'),
+        PopupMenuItem<String>(child: const Text('menu option 2'), value: '2'),
+        PopupMenuItem<String>(child: const Text('menu option 3'), value: '3'),
+      ],
+      elevation: 8.0,
+    ).then<void>((String itemSelected) {
+      if (itemSelected == null) return;
+
+      if (itemSelected == "1") {
+        //code here
+      } else if (itemSelected == "2") {
+        //code here
+      } else {
+        //code here
+      }
+    });*/
   }
 }

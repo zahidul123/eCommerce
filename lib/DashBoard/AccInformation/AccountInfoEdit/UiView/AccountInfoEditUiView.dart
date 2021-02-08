@@ -40,6 +40,8 @@ class AccountInformationEdit extends State<AccountInfoEditUi> {
   TextEditingController city = TextEditingController();
   TextEditingController phone = TextEditingController();
   String base64Image;
+
+  final updateUser=GlobalKey<FormState>();
   @override
   void initState() {
     pickupfile = false;
@@ -53,6 +55,7 @@ class AccountInformationEdit extends State<AccountInfoEditUi> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -65,351 +68,402 @@ class AccountInformationEdit extends State<AccountInfoEditUi> {
             style: TextStyle(color: CustomColors.TextGrey),
           ),
         ),
-        body: ListView(
-          children: <Widget>[
-            SizedBox(
-              height: 10,
-            ),
-            Stack(
-              alignment: Alignment.center,
-              children: <Widget>[
-                pickupfile
-                    ? showImage()
-                    : CircularImageShow(
+        body: Form(
+          key: updateUser,
+          child: Stack(
+            children: [
+              blocvisibility==false?ListView(
+                children: <Widget>[
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Stack(
+                    alignment: Alignment.center,
+                    children: <Widget>[
+                      pickupfile
+                          ? showImage()
+                          : CircularImageShow(
                         imageurl: imageurl,
                       ),
-                Positioned(
-                  top: 7,
-                  right: MediaQuery.of(context).size.width * .38,
-                  child: Container(
-                    child: InkWell(
-                      child: Icon(
-                        Icons.edit,
-                      ),
-                      onTap: () {
-                        pickImageFromGallery(ImageSource.gallery);
-                      },
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.width * .05,
-            ),
-            Container(
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    flex: 2,
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                          left: MediaQuery.of(context).size.width * .03),
-                      child: TextField(
-                        controller: firstname,
-                        style: TextStyle(fontSize: 14),
-                        keyboardType: TextInputType.text,
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.all(15),
-                          isDense: true,
-                          labelText: "First Name",
-                          border: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: CustomColors.BellYellow),
-                              borderRadius: BorderRadius.circular(5)),
+                      Positioned(
+                        top: 7,
+                        right: MediaQuery.of(context).size.width * .38,
+                        child: Container(
+                          child: InkWell(
+                            child: Icon(
+                              Icons.edit,
+                            ),
+                            onTap: () {
+                              showPickerImagePickerOption(context);
+                            },
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
                   SizedBox(
-                    width: 20,
+                    height: MediaQuery.of(context).size.width * .05,
                   ),
-                  Expanded(
-                    flex: 2,
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                          right: MediaQuery.of(context).size.width * .03),
-                      child: TextField(
-                        controller: lastname,
-                        keyboardType: TextInputType.text,
-                        style: TextStyle(fontSize: 14),
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.all(15),
-                          isDense: true,
-                          labelText: "Last Name",
-                          border: OutlineInputBorder(
-                              borderSide: BorderSide(color: CustomColors.green),
-                              borderRadius: BorderRadius.circular(5)),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.width * .03,
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: MediaQuery.of(context).size.width * .03),
-              child: TextField(
-                  controller: phone,
-                  textAlign: TextAlign.left,
-                  keyboardType: TextInputType.phone,
-                  style: TextStyle(fontSize: 14),
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.all(10),
-                    isDense: true,
-                    prefixIcon: Icon(
-                      Icons.phone,
-                      color: Colors.grey,
-                    ),
-                    //Left Icon
-                    labelText: "Phone Number",
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black12, width: 0),
-                      borderRadius: BorderRadius.circular(
-                        10.0,
-                      ), //Add rounded corners
-                    ),
-                  )),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.width * .03,
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: MediaQuery.of(context).size.width * .03),
-              child: TextField(
-                  controller: email,
-                  textAlign: TextAlign.left,
-                  keyboardType: TextInputType.emailAddress,
-                  style: TextStyle(fontSize: 14),
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.all(10),
-                    isDense: true,
-                    prefixIcon: Icon(
-                      Icons.email,
-                      color: Colors.grey,
-                    ),
-                    //Left Icon
-                    labelText: "Email Address",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(
-                        10.0,
-                      ), //Add rounded corners
-                    ),
-                  )),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.width * .03,
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: MediaQuery.of(context).size.width * .03),
-              child: TextField(
-                  controller: address,
-                  textAlign: TextAlign.left,
+                  Container(
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          flex: 2,
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                                left: MediaQuery.of(context).size.width * .03),
+                            child: TextFormField(
+                              controller: firstname,
+                              style: TextStyle(fontSize: 14),
+                              keyboardType: TextInputType.text,
+                              validator: (value){
+                                if(value.isEmpty){
+                                  return "Name should not empty";
+                                }
+                                return null;
 
-                  style: TextStyle(fontSize: 14),
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.all(10),
-                    isDense: true,
-                    prefixIcon: Icon(
-                      Icons.location_on,
-                      color: Colors.grey,
-                    ),
-                    //Left Icon
-                    labelText: "Address",
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black12, width: 0),
-                      borderRadius: BorderRadius.circular(
-                        10.0,
-                      ), //Add rounded corners
-                    ),
-                  )),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.width * .03,
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: MediaQuery.of(context).size.width * .03),
-              child: Text(
-                "Select Gender:",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 5),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  GestureDetector(
-                    onTap: () => setState(() {
-                      value = 0;
-                      gender = "Male";
-                    }),
-                    child: Container(
-                      height: 56,
-                      width: 56,
-                      color: value == 0 ? Colors.grey : Colors.transparent,
-                      child: Icon(MdiIcons.humanMale),
-                    ),
-                  ),
-                  SizedBox(width: 4),
-                  GestureDetector(
-                    onTap: () => setState(() {
-                      value = 1;
-                      gender = "Female";
-                    }),
-                    child: Container(
-                      height: 56,
-                      width: 56,
-                      color: value == 1 ? Colors.grey : Colors.transparent,
-                      child: Icon(MdiIcons.humanFemale),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.width * .03,
-            ),
-            Container(
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    flex: 2,
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                          left: MediaQuery.of(context).size.width * .03),
-                      child: TextField(
-                        controller: city,
-                        style: TextStyle(fontSize: 14),
-                        keyboardType: TextInputType.text,
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.all(15),
-                          isDense: true,
-                          labelText: "City",
-                          border: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: CustomColors.BellYellow),
-                              borderRadius: BorderRadius.circular(5)),
+                              },
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(15),
+                                isDense: true,
+                                labelText: "First Name",
+                                border: OutlineInputBorder(
+                                    borderSide:
+                                    BorderSide(color: CustomColors.BellYellow),
+                                    borderRadius: BorderRadius.circular(5)),
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Expanded(
+                          flex: 2,
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                                right: MediaQuery.of(context).size.width * .03),
+                            child: TextField(
+                              controller: lastname,
+                              keyboardType: TextInputType.text,
+                              style: TextStyle(fontSize: 14),
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(15),
+                                isDense: true,
+                                labelText: "Last Name",
+                                border: OutlineInputBorder(
+                                    borderSide: BorderSide(color: CustomColors.green),
+                                    borderRadius: BorderRadius.circular(5)),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   SizedBox(
-                    width: 20,
+                    height: MediaQuery.of(context).size.width * .03,
                   ),
-                  Expanded(
-                    flex: 2,
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                          right: MediaQuery.of(context).size.width * .03),
-                      child: TextField(
-                        controller: zip,
-                        keyboardType: TextInputType.number,
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * .03),
+                    child: TextFormField(
+                        controller: phone,
+                        textAlign: TextAlign.left,
+                        keyboardType: TextInputType.phone,
+                        style: TextStyle(fontSize: 14),
+                        validator: (value){
+                          if(value.isEmpty){
+                            return "Phone should not empty";
+                          }else if(value.length<11){
+                            return "Phone number should not less then 11 digit";
+                          }
+                          return null;
+
+                        },
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(10),
+                          isDense: true,
+                          prefixIcon: Icon(
+                            Icons.phone,
+                            color: Colors.grey,
+                          ),
+                          //Left Icon
+                          labelText: "Phone Number",
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black12, width: 0),
+                            borderRadius: BorderRadius.circular(
+                              10.0,
+                            ), //Add rounded corners
+                          ),
+                        )),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.width * .03,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * .03),
+                    child: TextFormField(
+                        controller: email,
+                        textAlign: TextAlign.left,
+                        keyboardType: TextInputType.emailAddress,
+                        style: TextStyle(fontSize: 14),
+                        validator: (value){
+                          Pattern pattern =
+                              r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+                          RegExp regex = new RegExp(pattern);
+                          if(value.isEmpty){
+                            return "Email should not empty";
+                          }else if(!regex.hasMatch(value)){
+                            return 'Enter Valid Email';
+                          }
+                          return null;
+
+                        },
+
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(10),
+                          isDense: true,
+                          prefixIcon: Icon(
+                            Icons.email,
+                            color: Colors.grey,
+                          ),
+                          //Left Icon
+                          labelText: "Email Address",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(
+                              10.0,
+                            ), //Add rounded corners
+                          ),
+                        )),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.width * .03,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * .03),
+                    child: TextFormField(
+                        controller: address,
+                        textAlign: TextAlign.left,
+                        validator: (value){
+                          if(value.isEmpty){
+                            return "Address should not empty";
+                          }
+                          return null;
+
+                        },
                         style: TextStyle(fontSize: 14),
                         decoration: InputDecoration(
-                          contentPadding: EdgeInsets.all(15),
+                          contentPadding: EdgeInsets.all(10),
                           isDense: true,
-                          labelText: "Zip Code",
+                          prefixIcon: Icon(
+                            Icons.location_on,
+                            color: Colors.grey,
+                          ),
+                          //Left Icon
+                          labelText: "Address",
                           border: OutlineInputBorder(
-                              borderSide: BorderSide(color: CustomColors.green),
-                              borderRadius: BorderRadius.circular(5)),
-                        ),
-                      ),
+                            borderSide: BorderSide(color: Colors.black12, width: 0),
+                            borderRadius: BorderRadius.circular(
+                              10.0,
+                            ), //Add rounded corners
+                          ),
+                        )),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.width * .03,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * .03),
+                    child: Text(
+                      "Select Gender:",
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                   ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.width * .03,
-            ),
-            Container(
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    flex: 2,
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                          left: MediaQuery.of(context).size.width * .03),
-                      child: TextField(
-                        style: TextStyle(fontSize: 14),
-                        keyboardType: TextInputType.text,
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.all(15),
-                          isDense: true,
-                          labelText: "District",
-                          border: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: CustomColors.BellYellow),
-                              borderRadius: BorderRadius.circular(5)),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 5),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        GestureDetector(
+                          onTap: () => setState(() {
+                            value = 0;
+                            gender = "Male";
+                          }),
+                          child: Container(
+                            height: 56,
+                            width: 56,
+                            color: value == 0 ? Colors.grey : Colors.transparent,
+                            child: Icon(MdiIcons.humanMale),
+                          ),
                         ),
-                      ),
+                        SizedBox(width: 4),
+                        GestureDetector(
+                          onTap: () => setState(() {
+                            value = 1;
+                            gender = "Female";
+                          }),
+                          child: Container(
+                            height: 56,
+                            width: 56,
+                            color: value == 1 ? Colors.grey : Colors.transparent,
+                            child: Icon(MdiIcons.humanFemale),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   SizedBox(
-                    width: 20,
+                    height: MediaQuery.of(context).size.width * .03,
                   ),
-                  Expanded(
-                    flex: 2,
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                          right: MediaQuery.of(context).size.width * .03),
-                      child: TextField(
-                        controller: country,
-                        keyboardType: TextInputType.text,
-                        style: TextStyle(fontSize: 14),
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.all(15),
-                          isDense: true,
-                          labelText: "Country",
-                          border: OutlineInputBorder(
-                              borderSide: BorderSide(color: CustomColors.green),
-                              borderRadius: BorderRadius.circular(5)),
+                  Container(
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          flex: 2,
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                                left: MediaQuery.of(context).size.width * .03),
+                            child: TextField(
+                              controller: city,
+                              style: TextStyle(fontSize: 14),
+                              keyboardType: TextInputType.text,
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(15),
+                                isDense: true,
+                                labelText: "City",
+                                border: OutlineInputBorder(
+                                    borderSide:
+                                    BorderSide(color: CustomColors.BellYellow),
+                                    borderRadius: BorderRadius.circular(5)),
+                              ),
+                            ),
+                          ),
                         ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Expanded(
+                          flex: 2,
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                                right: MediaQuery.of(context).size.width * .03),
+                            child: TextField(
+                              controller: zip,
+                              keyboardType: TextInputType.number,
+                              style: TextStyle(fontSize: 14),
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(15),
+                                isDense: true,
+                                labelText: "Zip Code",
+                                border: OutlineInputBorder(
+                                    borderSide: BorderSide(color: CustomColors.green),
+                                    borderRadius: BorderRadius.circular(5)),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.width * .03,
+                  ),
+                  Container(
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          flex: 2,
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                                left: MediaQuery.of(context).size.width * .03),
+                            child: TextField(
+                              style: TextStyle(fontSize: 14),
+                              keyboardType: TextInputType.text,
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(15),
+                                isDense: true,
+                                labelText: "District",
+                                border: OutlineInputBorder(
+                                    borderSide:
+                                    BorderSide(color: CustomColors.BellYellow),
+                                    borderRadius: BorderRadius.circular(5)),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Expanded(
+                          flex: 2,
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                                right: MediaQuery.of(context).size.width * .03),
+                            child: TextField(
+                              controller: country,
+                              keyboardType: TextInputType.text,
+                              style: TextStyle(fontSize: 14),
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(15),
+                                isDense: true,
+                                labelText: "Country",
+                                border: OutlineInputBorder(
+                                    borderSide: BorderSide(color: CustomColors.green),
+                                    borderRadius: BorderRadius.circular(5)),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.width * .03,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * .03),
+                    child: ButtonTheme(
+                      height: 50,
+                      child: RaisedButton(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(7.0),
+                            side: BorderSide(color: Colors.red)),
+                        onPressed: () {
+
+                          if(updateUser.currentState.validate()){
+                            setState(() {
+                              FocusScope.of(context).unfocus();
+                              blocvisibility = true;
+                              pickupfile=false;
+                            });
+                            if(gender==null){
+                              gender="";
+                            }
+
+                           accountInfoEdit_Bloc.add(FetchAccountInfoEditEvent(user_id: user_Id, email: email.text, first_name: firstname.text, last_name: lastname.text, phone: phone.text, gender: gender, picture: /*imageFile*/base64Image, address: address.text, city: city.text, country: country.text, zip: zip.text));
+                          /*  accountinfoedit(user_id: user_Id, email: email.text, first_name: firstname.text, last_name: lastname.text, phone: phone.text, gender: gender,
+                                picture: base64Image, address: address.text, city: city.text, country: country.text, zip: zip.text);
+*/
+
+                          }
+                        },
+                        textColor: Colors.white,
+                        padding: EdgeInsets.all(5.0),
+                        child: Text("Update", style: TextStyle(fontSize: 14)),
+                        color: Colors.red,
                       ),
                     ),
                   ),
+
                 ],
-              ),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.width * .03,
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: MediaQuery.of(context).size.width * .03),
-              child: ButtonTheme(
-                height: 50,
-                child: RaisedButton(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(7.0),
-                      side: BorderSide(color: Colors.red)),
-                  onPressed: () {
-                    setState(() {
-                      FocusScope.of(context).unfocus();
-                      blocvisibility = true;
-                      pickupfile=false;
-                    });
-                   // accountInfoEdit_Bloc.add(FetchAccountInfoEditEvent(user_id: user_Id, email: email.text, first_name: firstname.text, last_name: lastname.text, phone: phone.text, gender: gender, picture: base64Image, address: address.text, city: city.text, country: country.text, zip: zip.text));
-                    accountinfoedit(user_id: user_Id, email: email.text, first_name: firstname.text, last_name: lastname.text, phone: phone.text, gender: gender, picture: base64Image, address: address.text, city: city.text, country: country.text, zip: zip.text);
-                  },
-                  textColor: Colors.white,
-                  padding: EdgeInsets.all(5.0),
-                  child: Text("Update", style: TextStyle(fontSize: 14)),
-                  color: Colors.red,
-                ),
-              ),
-            ),
-            Visibility(
-              visible: blocvisibility,
-              child: Container(
+              ):
+              Container(child:Visibility(
+                visible: blocvisibility,
                 child: BlocBuilder<AccountInfoEdit_Bloc, AccountInfoEditState>(
                   builder: (context, state) {
                     if (state is AccountInfoEditInitialState) {
@@ -436,14 +490,15 @@ class AccountInformationEdit extends State<AccountInfoEditUi> {
                             });*/
                           alertdialog.successSweetAlert(
                               context,
-                              "Your Registration Successfully complete ",
+                              "Your Account Information Updated Successfully",
                               "success",
-                              () => AccountInfoDetails());
+                                  () => AccountInfoDetails());
                         });
-                      } else {
+                      }
+                      else {
                         WidgetsBinding.instance.addPostFrameCallback((_) {
                           alertdialog.loginFailedAlert(context,
-                              "Registration Failed", () => AccountInfoEditUi());
+                              "Account Information Update Failed", () => AccountInfoEditUi());
                           /* SweetAlert.show(context,
                             subtitle: "Login Filed",
                             style: SweetAlertStyle.error,
@@ -465,10 +520,12 @@ class AccountInformationEdit extends State<AccountInfoEditUi> {
                     }
                   },
                 ),
-              ),
-            ),
-          ],
-        ));
+              ),) ,
+            ],
+          ),
+        )
+
+    );
   }
 
   Future shahredpreferenceinitial() async {
@@ -476,6 +533,9 @@ class AccountInformationEdit extends State<AccountInfoEditUi> {
     setState(() {
       gender="Male";
       imageurl = sharedPreferences.getString("picture");
+      if(imageurl==""){
+        imageurl = sharedPreferences.getString("profile_image");
+      }
       user_Id = sharedPreferences.getString("user_id");
 
       if(sharedPreferences.getString("firstname")!=""||sharedPreferences.getString("firstname")!=null){
@@ -518,6 +578,7 @@ class AccountInformationEdit extends State<AccountInfoEditUi> {
         if (snapshot.connectionState == ConnectionState.done &&
             snapshot.data != null) {
           base64Image = base64Encode(snapshot.data.readAsBytesSync());
+          sharedPreferences.setString("profile_image", base64Image);
           return CircleAvatar(
               radius: 70,
               backgroundColor: Color(0xffCACECE),
@@ -547,11 +608,16 @@ class AccountInformationEdit extends State<AccountInfoEditUi> {
   }
 
   pickImageFromGallery(ImageSource source) async {
-
-
+    final picker = ImagePicker();
+  //  final pickedFile =  await picker.getImage(source: source);
     setState(() {
       pickupfile = true;
-      image = ImagePicker.pickImage(source: source);
+      image =  ImagePicker.pickImage(source: source);
+      image.then((value){
+        this.imageFile=value;
+      });
+      imageFile=imageFile;
+      //image =(File(pickedFile.path)) as Future<File>;
     });
 
 
@@ -569,47 +635,101 @@ class AccountInformationEdit extends State<AccountInfoEditUi> {
   }
 
 
-  accountinfoedit({String user_id, String email, String first_name, String last_name, String phone, String gender, String picture, String address, String city, String country, String zip})async{
-    print("notjing didrs xsedjxkvds ");
+  accountinfoedit({String user_id, String email, String first_name, String last_name, String phone, String gender,
+    String picture, String address, String city, String country, String zip})async{
+    buildLoading();
+
     Map body={
       "user_id":user_id,
       "first_name":first_name,
       "last_name":last_name,
       "phone":phone,
       "gender":gender,
+      "picture":picture,
       "address":address,
       "city":city,
       "zip":zip,
-      "country":country,
-      "picture":picture
+      "email":email,
+      "country":country
     };
+
     try{
-      print("response.statusCode");
-      final response=await http.post(Configuration.BASE_URL+"api/customers/edit",body: body);
+      print(Configuration.BASE_URLSean+"api/customers/edit");
+      final response=await http.post(Configuration.BASE_URL+"api/customers/update",
+        body: body,);
       print(response.statusCode);
+      Configuration alertdialog = Configuration();
       if(response.statusCode==200){
-        var responsedecode=json.decode(response.body);
-      }else{
-        print(response.statusCode);
+        String responses=response.body.toString();
+        var responsedecode=json.decode(responses);
+        var isSuccess=responsedecode["success"];
+        if(isSuccess==true){
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            alertdialog.successSweetAlert(
+                context,
+                "Your Account Information Updated Successfully",
+                "success",
+                    () => AccountInfoDetails());
+          });
+
+          //return "true";
+        }else{
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            alertdialog.loginFailedAlert(context,
+                "Account Information Update Failed", () => AccountInfoEditUi());
+            /* SweetAlert.show(context,
+                            subtitle: "Login Filed",
+                            style: SweetAlertStyle.error,
+                            showCancelButton: false,
+                            onPress: (bool isConfirm) {
+                              loginbloc.add(InitialEvent());
+                              if(isConfirm){
+                                Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+                                    LoginRegUI()), (Route<dynamic> route) => false);
+                                //Navigator.of(context).pop();
+                              }
+                              return false;
+                            });*/
+          });
+
+        }
+
       }
     }catch(e){
-      throw Exception();
-    }
-   /* try{
-       http.post(Configuration.BASE_URL+"api/customers/edit",body: body)
-       .then((response){
-         print(response.body);
-         if(response.statusCode==200){
-           var responsedecode=json.decode(response.body);
-         }else{
-           throw Exception();
-         }
-       }).catchError((error){
-         print(error.toString());
-       });
 
-    }catch(e){
-      throw Exception();
-    }*/
+    }
   }
+
+  void showPickerImagePickerOption(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
+          return SafeArea(
+            child: Container(
+              child: new Wrap(
+                children: <Widget>[
+                  new ListTile(
+                      leading: new Icon(Icons.photo_library),
+                      title: new Text('Photo Library'),
+                      onTap: () {
+                        pickImageFromGallery(ImageSource.gallery);
+                        Navigator.of(context).pop();
+                      }),
+                  new ListTile(
+                    leading: new Icon(Icons.photo_camera),
+                    title: new Text('Camera'),
+                    onTap: () {
+                      pickImageFromGallery(ImageSource.camera);
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+    );
+  }
+
+
 }

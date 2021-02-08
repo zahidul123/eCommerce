@@ -4,6 +4,7 @@ import 'package:ciblecommerce/LoginRegistration/UiView/LoginRegUI.dart';
 import 'package:ciblecommerce/ProductDetails_OrderList/ProductDetails/BlocStates/ProdectDetails_Event.dart';
 import 'package:ciblecommerce/ProductDetails_OrderList/ProductDetails/BlocStates/ProdectDetails_States.dart';
 import 'package:ciblecommerce/ProductDetails_OrderList/ProductDetails/BlocStates/ProductDetails_Bloc.dart';
+import 'package:ciblecommerce/ProductDetails_OrderList/ProductDetails/Datas/SaveCartData.dart';
 import 'package:ciblecommerce/ProductOrder/Address/UiView/DeliveryLocationUi.dart';
 import 'package:ciblecommerce/utils/UserLogincheck.dart';
 import 'package:ciblecommerce/utils/colors.dart';
@@ -11,7 +12,9 @@ import 'package:ciblecommerce/widgets/cart_widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:toast/toast.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProductDetailsUi extends StatefulWidget {
   String product_id;
@@ -483,15 +486,24 @@ class ProductDetails extends State<ProductDetailsUi> {
     int result;
 
     if (choose == "cart") {
+      /*SaveCardDataInRepository saveCardDataInRepository=SaveCardDataInRepository();
+      SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+      String customer_id=sharedPreferences.getString("user_id");
+
+    final response=  saveCardDataInRepository.ImpSaveCartData(customer_id: customer_id, book_id: product_id,
+        rating:product_title ,description: product_description);*/
       result = await helper.insertNote(CartModel(product_id, product_title,
-          product_description, product_price, '1', product_image, choose));
+          product_description, product_price, '1', product_image,"true", choose),"cart");
+
     } else {
       result = await helper.insertNote(CartModel(product_id, product_title,
-          product_description, product_price, '1', product_image, choose));
+          product_description, product_price, '1', product_image,"true", choose),"wish");
     }
     if (result != 0) {
       debugPrint('$result');
+      Toast.show("Product Added Successfully", context, duration: Toast.LENGTH_SHORT, gravity:  Toast.CENTER);
     } else {
+      Toast.show("Product does not added or duplicate", context, duration: Toast.LENGTH_SHORT, gravity:  Toast.CENTER);
       debugPrint('$result');
     }
   }
@@ -530,7 +542,7 @@ class ProductDetails extends State<ProductDetailsUi> {
         context: context,
         builder: (context) {
           return Container(
-            height: 180,
+            height: MediaQuery.of(context).size.height*.24,
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -577,4 +589,5 @@ class ProductDetails extends State<ProductDetailsUi> {
           );
         });
  }
+
 }

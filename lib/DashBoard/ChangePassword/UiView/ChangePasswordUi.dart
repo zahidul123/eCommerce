@@ -301,7 +301,7 @@ class ChangePassword extends State<ChangePasswordUi> {
                       },
                       textColor: Colors.white,
                       padding: EdgeInsets.all(5.0),
-                      child: Text("Reset", style: TextStyle(fontSize: 14)),
+                      child: Text("Submit", style: TextStyle(fontSize: 14)),
                       color: Colors.red,
                     ),
                   ),
