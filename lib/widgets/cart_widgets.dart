@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CartItemWidget extends StatefulWidget{
+  static CartItem of(BuildContext context) => context.findAncestorStateOfType<CartItem>();
+
   String product_title;
   String product_price;
   CartItemWidget(this.product_title,this.product_price);

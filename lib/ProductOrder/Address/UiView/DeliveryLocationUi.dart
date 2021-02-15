@@ -1,4 +1,5 @@
 import 'package:ciblecommerce/CartListAndOrder/AddToCart/DatabaseHelperclass.dart';
+import 'package:ciblecommerce/CartListAndOrder/CartListUi/OrderListModel.dart';
 import 'package:ciblecommerce/DashBoard/AccInformation/AccountInfoDataShahredPreference.dart';
 import 'package:ciblecommerce/LoginRegistration/LoginModelClass.dart';
 import 'package:ciblecommerce/ProductOrder/Payment/UiView/PaymentMethods.dart';
@@ -7,9 +8,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class DeliveryLocationUi extends StatefulWidget {
+  double prices;
+  List<OrderListModel> orderListArray;
+  DeliveryLocationUi(this.prices,this.orderListArray);
+
   @override
   State<StatefulWidget> createState() {
-    return DeliveryLocation();
+    return DeliveryLocation(this.prices,this.orderListArray);
   }
 }
 
@@ -25,6 +30,9 @@ class DeliveryLocation extends State<DeliveryLocationUi> {
   TextEditingController city = TextEditingController();
   TextEditingController phone = TextEditingController();
   bool checkboxvalue = false;
+  double prices;
+  List<OrderListModel> orderListArray;
+  DeliveryLocation(this.prices,this.orderListArray);
 
   @override
   Widget build(BuildContext context) {
@@ -367,7 +375,7 @@ class DeliveryLocation extends State<DeliveryLocationUi> {
                   if(validation.currentState.validate()){
                     Navigator.push(context,
                         PageRouteBuilder(pageBuilder: (context, animation, secondaryAnimation) =>
-                            PaymentMethod(firstname.text,lastname.text,phone.text,email.text,address.text,city.text),
+                            PaymentMethod(firstname.text,lastname.text,phone.text,email.text,address.text,city.text,prices,zip.text,country.text,orderListArray),
                           transitionDuration: Duration(seconds: 1),
                         ));
                   }
@@ -404,9 +412,9 @@ class DeliveryLocation extends State<DeliveryLocationUi> {
   }
 
   void getUserAllInformation() async {
-    Future<List<LoginModel>> loginModelsnap =
+    Future<List<LoginModel>> loginModelSnap =
         AccountInfoPreference.checkUserLogin();
-    LoginModel loginModel = await loginModelsnap.then((value) => value[0]);
+    LoginModel loginModel = await loginModelSnap.then((value) => value[0]);
     if (checkboxvalue == true) {
       firstname.text = loginModel.first_name;
       lastname.text = loginModel.last_name;

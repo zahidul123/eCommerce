@@ -11,6 +11,8 @@ class LoginModel{
   var address;
   var city;
   var session_id;
+  var country;
+  var zip;
 
   LoginModel(
       this.user_name,
@@ -22,7 +24,9 @@ class LoginModel{
       this.phone,
       this.address,
       this.city,
-      this.session_id);
-
+      this.session_id,
+      this.country,
+     this.zip
+  );
 
 }

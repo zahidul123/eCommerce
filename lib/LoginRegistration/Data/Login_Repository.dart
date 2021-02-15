@@ -36,7 +36,8 @@ class LoginRepositoryImp extends LoginRepository{
           var address=responsedecode["user_info"]["address"];
           var city=responsedecode["user_info"]["city"];
           var session_id=responsedecode["session_info"]["session_id"];
-
+          var country=responsedecode["user_info"]["country"];
+          var zip=responsedecode["user_info"]["zip"];
           sharedPreferences.setString("user_name",user_name);
           sharedPreferences.setString("user_id",user_id);
           sharedPreferences.setString("gender",gender);
@@ -46,6 +47,8 @@ class LoginRepositoryImp extends LoginRepository{
           sharedPreferences.setString("phone",phone);
           sharedPreferences.setString("address",address);
           sharedPreferences.setString("city",city);
+          sharedPreferences.setString("country",country);
+          sharedPreferences.setString("zip",zip);
           sharedPreferences.setString("session_id",session_id);
         }
         return responsedecode["success"].toString();

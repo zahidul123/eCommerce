@@ -1,16 +1,20 @@
+import 'package:ciblecommerce/CartListAndOrder/CartListUi/OrderListModel.dart';
 import 'package:ciblecommerce/ProductOrder/OrderSummery/ConfirmationOrderPage.dart';
 import 'package:ciblecommerce/utils/colors.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 
 class PaymentMethod extends StatefulWidget{
-  String firstName,lastName,phone,email,address,city;
-  PaymentMethod(this.firstName, this.lastName,this.phone, this.email, this.address, this.city);
+  String firstName,lastName,phone,email,address,city,zip,country;
+  double prices;
+  List<OrderListModel> orderListArray;
+  PaymentMethod(this.firstName, this.lastName,this.phone, this.email, this.address, this.city
+      ,this.prices,this.zip,this.country,this.orderListArray );
 
   @override
   State<StatefulWidget> createState() {
-   return PaymentMethodUi(this.firstName, this.lastName,this.phone, this.email, this.address, this.city);
+   return PaymentMethodUi(this.firstName, this.lastName,this.phone, this.email, this.address, this.city
+       ,this.prices,this.zip,this.country,this.orderListArray);
   }
 }
 
@@ -20,8 +24,11 @@ class PaymentMethodUi extends State<PaymentMethod> {
     "assets/ic_icons/bkash.png",
     "assets/ic_icons/bkash.png"
   ];
-  String firstName,lastName,phone,email,address,city;
-  PaymentMethodUi(this.firstName, this.lastName,this.phone, this.email, this.address, this.city);
+  String firstName,lastName,phone,email,address,city,zip,country;
+  double prices;
+  List<OrderListModel> orderListArray;
+  PaymentMethodUi(this.firstName, this.lastName,this.phone, this.email, this.address, this.city
+      ,this.prices,this.zip,this.country,this.orderListArray);
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +58,8 @@ class PaymentMethodUi extends State<PaymentMethod> {
                      context,
                      MaterialPageRoute(
                          builder: (context) =>
-                             ConfirmOrderPage(this.firstName, this.lastName,this.phone, this.email, this.address, this.city,"cashOn")));
+                             ConfirmOrderPage(this.firstName, this.lastName,this.phone,
+                                 this.email, this.address, this.city,this.zip,this.country,"cashOn",this.prices,this.orderListArray)));
                },
                child: Container(
                  margin: EdgeInsets.only(top: size.height*.3),
@@ -199,7 +207,8 @@ class PaymentMethodUi extends State<PaymentMethod> {
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
-                                                        ConfirmOrderPage(this.firstName, this.lastName,this.phone, this.email, this.address, this.city,deleveryType)));
+                                                        ConfirmOrderPage(this.firstName, this.lastName,this.phone, this.email, this.address,
+                                                            this.city,this.zip,this.country,deleveryType,this.prices,this.orderListArray)));
                                           },
                                           );
                                         },

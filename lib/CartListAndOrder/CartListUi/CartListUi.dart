@@ -126,7 +126,7 @@ class CartListAndOrderShow extends State<CartListUi> {
                   onPressed: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => DeliveryLocationUi())),
+                          builder: (context) => DeliveryLocationUi(prices,orderListArray))),
                   child: Text(
                     "Buy Now",
                     style: TextStyle(
@@ -144,6 +144,7 @@ class CartListAndOrderShow extends State<CartListUi> {
   }
 
   ShowCartlist() {
+    orderListArray.clear();
     return cartlistdata.length < 1
         ? cartlistdata.isEmpty
             ? ShowProgressbar()
@@ -168,7 +169,8 @@ class CartListAndOrderShow extends State<CartListUi> {
               String isSelect = cartlistdata[position].productSelect;
               if(isSelect=="true"){
                 selected=true;
-                orderListArray.add(OrderListModel(pid, quantity));
+
+                orderListArray.add(OrderListModel(pid, /*quantity*/price));
               }else{
                 selected=false;
               }

@@ -53,8 +53,8 @@ class MyApp extends StatelessWidget {
             color: Colors.white,
           )),
       debugShowCheckedModeBanner: false,
-      home: /*SplashScreen()*/
-      Home(),
+      home: SplashScreen()
+      /*Home()*/,
 
     );
   }

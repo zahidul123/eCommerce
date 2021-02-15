@@ -1,5 +1,6 @@
 import 'package:ciblecommerce/CartListAndOrder/AddToCart/Cartmodel.dart';
 import 'package:ciblecommerce/CartListAndOrder/AddToCart/DatabaseHelperclass.dart';
+import 'package:ciblecommerce/CartListAndOrder/CartListUi/OrderListModel.dart';
 import 'package:ciblecommerce/LoginRegistration/UiView/LoginRegUI.dart';
 import 'package:ciblecommerce/ProductDetails_OrderList/ProductDetails/BlocStates/ProdectDetails_Event.dart';
 import 'package:ciblecommerce/ProductDetails_OrderList/ProductDetails/BlocStates/ProdectDetails_States.dart';
@@ -32,7 +33,7 @@ class ProductDetails extends State<ProductDetailsUi> {
   String product_id;
 
   ProductDetails({@required this.product_id});
-
+  List<OrderListModel> orderListArray = List<OrderListModel>();
   String product_title;
   String product_description;
   String product_price;
@@ -574,11 +575,14 @@ class ProductDetails extends State<ProductDetailsUi> {
                             style:
                             TextStyle(color: Colors.white),
                           ),
-                          onPressed: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      DeliveryLocationUi())),
+                          onPressed: (){
+                            orderListArray.add(OrderListModel(product_id, "1"));
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        DeliveryLocationUi(double.parse(CartItemWidget.of(context).totalprice),orderListArray )));
+                          },
                         ),
                       ),
                     ),

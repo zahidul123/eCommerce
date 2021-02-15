@@ -14,7 +14,9 @@ class AccountInfoPreference{
     var address=sharedPreferences.getString("address");
     var city=sharedPreferences.getString("city");
     var session_id=sharedPreferences.getString("session_id");
-    userdata.add(LoginModel(user_name,user_id,gender,first_name,last_name,email,phone,address,city,session_id));
+    var country=sharedPreferences.getString("country");
+    var zip=sharedPreferences.getString("zip");
+    userdata.add(LoginModel(user_name,user_id,gender,first_name,last_name,email,phone,address,city,session_id,country,zip));
 
     return userdata;
   }
